@@ -2,6 +2,7 @@ import ray
 from ray import serve
 from ray.serve.drivers import DAGDriver
 from ray.serve.deployment_graph import InputNode
+from ray.serve.http_adapters import json_request
 
 # These imports are used only for type hints:
 from typing import Dict, List
@@ -98,5 +99,4 @@ with InputNode() as query:
 
     net_price = fruit_market.check_price.bind(fruit, amount)
 
-deployment_graph = DAGDriver.bind(net_price, http_adapter=json_resolver)
-
+deployment_graph = DAGDriver.bind(net_price, http_adapter=json_request)
