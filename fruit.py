@@ -7,7 +7,7 @@ from ray.serve.http_adapters import json_request
 # These imports are used only for type hints:
 from typing import Dict, List
 from starlette.requests import Request
-from ray.serve.deployment_graph import ClassNode
+from ray.serve.handle import RayServeDeploymentHandle
 
 
 @serve.deployment(num_replicas=2)
@@ -15,9 +15,9 @@ class FruitMarket:
 
     def __init__(
         self,
-        mango_stand: ClassNode,
-        orange_stand: ClassNode,
-        pear_stand: ClassNode,
+        mango_stand: RayServeDeploymentHandle,
+        orange_stand: RayServeDeploymentHandle,
+        pear_stand: RayServeDeploymentHandle,
     ):
         self.directory = {
             "MANGO": mango_stand,
@@ -25,12 +25,14 @@ class FruitMarket:
             "PEAR": pear_stand,
         }
     
-    def check_price(self, fruit: str, amount: float) -> float:
+    async def check_price(self, fruit: str, amount: float) -> float:
         if fruit not in self.directory:
             return -1
         else:
             fruit_stand = self.directory[fruit]
-            return ray.get(fruit_stand.check_price.remote(amount))
+            ref: ray.ObjectRef = await fruit_stand.check_price.remote(amount)
+            result = await ref
+            return result
 
 
 @serve.deployment(user_config={"price": 3})
