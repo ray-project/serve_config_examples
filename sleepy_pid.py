@@ -7,7 +7,7 @@ class SleepyPid:
 
     def __init__(self):
         import time
-        time.sleep(10)
+        time.sleep(120)
     
     def __call__(self) -> int:
         import os
