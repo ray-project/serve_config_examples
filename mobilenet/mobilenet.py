@@ -8,7 +8,7 @@ import numpy as np
 @serve.deployment()
 class ImageClassifier:
     def __init__(self):
-        self.model = MobileNetV2(weights='imagenet')
+        self.model = MobileNetV2(weights="imagenet")
     # Users can send HTTP requests with an image. The classifier will return
     # the top prediction.
     # Sample output: {"prediction":["n02099601","golden_retriever",0.17944198846817017]}
