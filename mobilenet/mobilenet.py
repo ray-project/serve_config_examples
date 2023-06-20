@@ -31,4 +31,4 @@ class ImageClassifier:
         return {"prediction": decoded_preds[0]}
 
 image_classifier_handle = ImageClassifier.bind()
-graph = DAGDriver.bind(image_classifier_handle)
+app = DAGDriver.bind(image_classifier_handle)
