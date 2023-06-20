@@ -1,9 +1,14 @@
-from ray.serve.drivers import DAGDriver
-from ray import serve
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions
 import numpy as np
+import tempfile
+
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.mobilenet_v2 import (
+    preprocess_input,
+    decode_predictions,
+    MobileNetV2,
+)
+
+from ray import serve
 
 @serve.deployment()
 class ImageClassifier:
@@ -15,9 +20,7 @@ class ImageClassifier:
     async def __call__(self, http_request):
         request = await http_request.form()
         image_file = await request["image"].read()
-        import tempfile
 
-        # Create a temporary file in binary write mode
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
             temp_file.write(image_file)
             temp_file.close()
@@ -30,5 +33,4 @@ class ImageClassifier:
         decoded_preds = decode_predictions(preds, top=1)[0]
         return {"prediction": decoded_preds[0]}
 
-image_classifier_handle = ImageClassifier.bind()
-app = DAGDriver.bind(image_classifier_handle)
+app = ImageClassifier.bind()
