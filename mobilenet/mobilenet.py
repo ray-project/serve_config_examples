@@ -10,6 +10,7 @@ from tensorflow.keras.applications.mobilenet_v2 import (
 
 from ray import serve
 
+
 @serve.deployment()
 class ImageClassifier:
     def __init__(self):
