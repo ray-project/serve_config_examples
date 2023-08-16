@@ -1,6 +1,6 @@
 import requests
 
-# Deploy service : serve run summary_service:deployment
+# Deploy service : serve run text_summarizer:deployment
 
 
 text = (
