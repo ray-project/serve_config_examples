@@ -1,7 +1,7 @@
 import argparse
 from concurrent import futures
 import functools
-from io import BytesIO  # pylint:disable=g-importing-member
+from io import BytesIO
 import numpy as np
 from PIL import Image
 import requests
