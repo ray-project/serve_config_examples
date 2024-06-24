@@ -9,6 +9,8 @@ from ray import serve
 app = FastAPI()
 _MAX_BATCH_SIZE = 64
 
+logger = logging.getLogger("ray.serve")
+
 @serve.deployment(num_replicas=1)
 @serve.ingress(app)
 class APIIngress:
@@ -63,7 +65,7 @@ class StableDiffusion:
     self._profiler_dir = "/tmp/tensorboard"
 
     if warmup:
-      print("Sending warmup requests.")
+      logger.info("Sending warmup requests.")
       warmup_prompts = ["A warmup request"] * warmup_batch_size
       self.generate_tpu(warmup_prompts)
 
@@ -85,10 +87,10 @@ class StableDiffusion:
     rng = jax.random.split(rng, jax.device_count())
 
     assert prompts, "prompt parameter cannot be empty"
-    print("Prompts: ", prompts)
+    logger.info("Prompts: %s", prompts)
     prompt_ids = self._pipeline.prepare_inputs(prompts)
     prompt_ids = shard(prompt_ids)
-    print("Sharded prompt ids has shape:", prompt_ids.shape)
+    logger.info("Sharded prompt ids has shape: %s", prompt_ids.shape)
     if self._run_with_profiler:
       jax.profiler.start_trace(self._profiler_dir)
 
@@ -99,11 +101,11 @@ class StableDiffusion:
     if self._run_with_profiler:
       jax.profiler.stop_trace()
 
-    print("Inference time (in seconds): ", elapsed)
-    print("Shape of the predictions: ", images.shape)
+    logger.info("Inference time (in seconds): %f", elapsed)
+    logger.info("Shape of the predictions: %s", images.shape)
     images = images.reshape(
         (images.shape[0] * images.shape[1],) + images.shape[-3:])
-    print("Shape of images afterwards: ", images.shape)
+    logger.info("Shape of images afterwards: %s", images.shape)
     return self._pipeline.numpy_to_pil(np.array(images))
 
   @serve.batch(batch_wait_timeout_s=10, max_batch_size=_MAX_BATCH_SIZE)
@@ -119,7 +121,7 @@ class StableDiffusion:
     Returns:
       A list of responses which contents are raw PNG.
     """
-    print("Number of input prompts: ", len(prompts))
+    logger.info("Number of input prompts: %d", len(prompts))
     num_to_pad = _MAX_BATCH_SIZE - len(prompts)
     prompts += ["Scratch request"] * num_to_pad
 
