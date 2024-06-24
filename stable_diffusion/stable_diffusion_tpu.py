@@ -3,8 +3,10 @@ from io import BytesIO
 from typing import List
 from fastapi import FastAPI
 from fastapi.responses import Response
+import logging
 import ray
 from ray import serve
+import time
 
 app = FastAPI()
 _MAX_BATCH_SIZE = 64
@@ -80,7 +82,6 @@ class StableDiffusion:
     """
     from flax.training.common_utils import shard
     import jax
-    import time
     import numpy as np
 
     rng = jax.random.PRNGKey(0)
