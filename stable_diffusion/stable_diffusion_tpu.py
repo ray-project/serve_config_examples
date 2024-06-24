@@ -30,7 +30,8 @@ class APIIngress:
 @serve.deployment(
     ray_actor_options={
         "resources": {"TPU": 4},
-    })
+    },
+)
 class StableDiffusion:
   """FLAX Stable Diffusion Ray Serve deployment running on TPUs.
 
