@@ -1,8 +1,8 @@
 """Ray Serve Stable Diffusion example."""
-from io import BytesIO  # pylint:disable=g-importing-member
+from io import BytesIO
 from typing import List
-from fastapi import FastAPI  # pylint:disable=g-importing-member
-from fastapi.responses import Response  # pylint:disable=g-importing-member
+from fastapi import FastAPI
+from fastapi.responses import Response
 import ray
 from ray import serve
 
@@ -44,11 +44,11 @@ class StableDiffusion:
   def __init__(
       self, run_with_profiler: bool = False, warmup: bool = False,
       warmup_batch_size: int = _MAX_BATCH_SIZE):
-    from diffusers import FlaxStableDiffusionPipeline  # pylint:disable=g-import-not-at-top,g-importing-member
-    from flax.jax_utils import replicate  # pylint:disable=g-import-not-at-top,g-importing-member
-    import jax  # pylint:disable=g-import-not-at-top,unused-import
-    import jax.numpy as jnp  # pylint:disable=g-import-not-at-top
-    from jax import pmap  # pylint:disable=g-import-not-at-top,g-importing-member
+    from diffusers import FlaxStableDiffusionPipeline
+    from flax.jax_utils import replicate
+    import jax 
+    import jax.numpy as jnp
+    from jax import pmap
 
     model_id = "CompVis/stable-diffusion-v1-4"
 
@@ -76,10 +76,10 @@ class StableDiffusion:
     Returns:
       A list of PIL Images.
     """
-    from flax.training.common_utils import shard  # pylint:disable=g-import-not-at-top,g-importing-member
-    import jax   # pylint:disable=g-import-not-at-top
-    import time  # pylint:disable=g-import-not-at-top
-    import numpy as np  # pylint:disable=g-import-not-at-top
+    from flax.training.common_utils import shard
+    import jax
+    import time
+    import numpy as np
 
     rng = jax.random.PRNGKey(0)
     rng = jax.random.split(rng, jax.device_count())
