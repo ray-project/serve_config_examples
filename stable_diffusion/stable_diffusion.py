@@ -23,8 +23,7 @@ class APIIngress:
     async def generate(self, prompt: str, img_size: int = 512):
         assert len(prompt), "prompt parameter cannot be empty"
 
-        image_ref = await self.handle.generate.remote(prompt, img_size=img_size)
-        image = await image_ref
+        image = await self.handle.generate.remote(prompt, img_size=img_size)
         file_stream = BytesIO()
         image.save(file_stream, "PNG")
         return Response(content=file_stream.getvalue(), media_type="image/png")
