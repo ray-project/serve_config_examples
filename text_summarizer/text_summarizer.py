@@ -6,7 +6,6 @@ import torch
 app = FastAPI()
 
 @serve.deployment(
-    route_prefix="/",
     ray_actor_options={"num_gpus": 1},
 )
 @serve.ingress(app)
